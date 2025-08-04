@@ -1,11 +1,15 @@
 from module.common import Common
+
+import matplotlib
 import matplotlib.pyplot as plt
+
 from matplotlib import rcParams
 
 
 class Output(Common):
     def __init__(self):
         self.logger = self.get_logger()
+        matplotlib._log.setLevel(logging.ERROR)
 
     def make_graph(self, data):
         rcParams['font.family'] = 'Malgun Gothic'
