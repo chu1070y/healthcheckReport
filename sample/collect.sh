@@ -1,5 +1,9 @@
 #!/bin/bash
 
+###################################### 로그 파일 정의
+LOGFILE="./$(hostname).log"
+exec > "$LOGFILE" 2>&1
+
 ###################################### 접속 정보 정의
 db_user=root
 db_password=rplinux
@@ -9,7 +13,7 @@ socket=/tmp/mysql_8.0.sock
 mysql_engine=/mysql/mysql_8.0
 #mysql_engine=/maria/maria_10.6
 
-###################################### 함수 정의
+###################################### 함수
 mysql_query() {
     $mysql_engine/bin/mysql -u"$db_user" -p"$db_password" -S "$socket" -N -B -e "$1" 2>/dev/null
 }
