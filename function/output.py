@@ -1,13 +1,10 @@
 from module.common import Common
-
-import matplotlib
 import matplotlib.pyplot as plt
 
 
 class Output(Common):
     def __init__(self):
         self.logger = self.get_logger()
-        matplotlib._log.setLevel(logging.ERROR)
 
     def make_graph(self, data):
         max_value = max(row[2] for row in data)

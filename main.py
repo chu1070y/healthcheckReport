@@ -146,12 +146,12 @@ class Main(Common):
                 self.logger.warning("잘못된 입력입니다. Y 또는 N을 입력해 주세요.")
 
         ################### 4. 로그 파싱
-        log_data = dict()
         for log in log_files:
             self.logger.info(f'################## Processing the log file: {log}')
             service = client_name + '_' + os.path.basename(log).split(".")[0]
-            log_data[client_name + '_' + os.path.basename(log).split(".")[0]] = parser.get_information(log)
 
+            log_data = parser.get_information(log)
+            log_data["service_name"] = service
             ################### 5. 데이터 insert
             db_work.insert_information(log_data)
 
@@ -171,7 +171,7 @@ class Main(Common):
             sleep(0.5)
             self.logger.info('################## Making healthcheck report')
 
-            data = db_work.get_information_values(service)
+            data = db_work.get_information_values(service, log_data["execute_time"])
 
             # 데이터 가공
             data["data_size"] = self.format_bytes(data["data_size"])

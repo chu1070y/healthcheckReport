@@ -26,22 +26,16 @@ class DBwork(Common):
 
         query = insert_information.format(db_name=self.db_name, column_list=column_list, column_value=column_value)
 
-        ### 데이터 생성
-        data_list = list()
-        for k, v in data.items():
-            v["service_name"] = k
-            data_list.append(v)
-
         ### 쿼리 실행
-        self.db.mysql_executemany(query, data_list)
+        self.db.mysql_execute(query, data)
         self.db.mysql_commit()
 
     def get_information_column(self):
         self.db.mysql_execute(get_info_column_name.format(db_name=self.db_name))
         return [item[0] for item in self.db.mysql_fetchall()]
 
-    def get_information_values(self, service_name):
-        return self.db.mysql_fetchone_dict(get_information.format(db_name=self.db_name, service_name=service_name))
+    def get_information_values(self, service_name, execute_time):
+        return self.db.mysql_fetchone_dict(get_information.format(db_name=self.db_name, service_name=service_name, execute_time=execute_time))
 
     def get_datasize(self, service_name):
         self.db.mysql_execute(get_datasize.format(db_name=self.db_name, service_name=service_name))

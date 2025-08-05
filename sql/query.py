@@ -87,9 +87,6 @@ get_information = """
   FROM
       {db_name}.hc_information
   WHERE
-      service_name = '{service_name}'
-  ORDER BY
-      execute_time DESC
-  LIMIT 1
+      service_name = '{service_name}' and execute_time = '{execute_time}'
 """
 
