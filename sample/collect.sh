@@ -58,7 +58,6 @@ if [ -n "$db_proc" ]; then
 
     # 옵션 파싱
     datadir=$(echo "$db_proc" | grep -oP '(--datadir=)[^ ]*' | head -n 1 | cut -d= -f2)
-    error_log=$(echo "$db_proc" | grep -oP '(--log-error=)[^ ]*' | head -n 1 | cut -d= -f2)
     config_file=$(echo "$db_proc" | grep -oP '(--defaults-file=)[^ ]*' | head -n 1 | cut -d= -f2)
     db_port=$(echo "$db_proc" | grep -oP '(--port=)[^ ]*' | head -n 1 | cut -d= -f2)
 
@@ -76,10 +75,6 @@ if [ -n "$db_proc" ]; then
         datadir=$(grep -i '^datadir' "$config_file" | awk -F= '{print $2}' | xargs)
     fi
 
-    if [ -z "$error_log" ] && [ -n "$config_file" ]; then
-        error_log=$(grep -i '^log[_-]error' "$config_file" | awk -F= '{print $2}' | xargs)
-    fi
-
     if [ -z "$db_port" ] && [ -n "$config_file" ]; then
         db_port=$(grep -i '^port' "$config_file" | head -n1 | awk -F= '{print $2}' | xargs)
     fi
@@ -95,7 +90,6 @@ if [ -n "$db_proc" ]; then
 
     echo "data_home=$datadir"
     echo "config_file=$config_file"
-    echo "error_log=$error_log"
     echo "db_port=$db_port"
     echo "data_disk_usage=$data_disk_usage"
 else
@@ -103,7 +97,6 @@ else
     echo "engine_home=NOT_RUNNING"
     echo "data_home="
     echo "config_file="
-    echo "error_log="
     echo "db_port="
     echo "data_disk_usage="
     exit 1
@@ -148,10 +141,10 @@ log_slow_path=$(mysql_query "SHOW VARIABLES LIKE 'slow_query_log_file';" | awk '
 log_bin_path=$(mysql_query "SHOW VARIABLES LIKE 'log_bin_basename';" | awk '{print $2}')
 tmpdir=$(mysql_query "SHOW VARIABLES LIKE 'tmpdir';" | awk '{print $2}')
 max_connection=$(mysql_query "SHOW VARIABLES LIKE 'max_connections';" | awk '{print $2}')
+error_log=$(mysql_query "SHOW VARIABLES LIKE 'log_error';" | awk '{print $2}')
 
 echo "innodb_buffer_pool_size=$innodb_buffer_pool_size"
 echo "key_buffer_size=$key_buffer_size"
-
 
 # 2. 데이터 크기 (MB 또는 GB로 변환)
 data_size=$(mysql_query "SELECT SUM(data_length + index_length) FROM information_schema.tables;")
@@ -200,6 +193,7 @@ innodb_undo_history_length=$(mysql_query "
 echo "log_slow_path=$log_slow_path"
 echo "log_bin_path=$log_bin_path"
 echo "tmpdir=$tmpdir"
+echo "error_log=$error_log"
 echo "data_size=$data_size"
 echo "innodb_buffer_pool_read_requests=$innodb_buffer_pool_read_requests"
 echo "innodb_buffer_pool_reads=$innodb_buffer_pool_reads"
