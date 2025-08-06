@@ -73,7 +73,7 @@ create table if not exists {db_name}.hc_information (
 
 get_info_column_name = "select column_name from information_schema.columns where table_schema='health_check' and table_name='hc_information' and EXTRA != 'VIRTUAL GENERATED' order by ORDINAL_POSITION"
 
-insert_information = 'insert into {db_name}.hc_information ({column_list}) values ({column_value})'
+insert_information = 'replace into {db_name}.hc_information ({column_list}) values ({column_value})'
 
 get_datasize = "select service_name, DATE_FORMAT(execute_time, '%Y-%m-%d %H:%i:%s') AS execute_time, data_size from {db_name}.hc_information where service_name='{service_name}' limit 6"
 
