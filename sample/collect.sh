@@ -8,10 +8,8 @@ exec > "$LOGFILE" 2>&1
 db_user=root
 db_password=rplinux
 socket=/tmp/mysql_8.0.sock
-#socket=/tmp/maria_10.6.sock
 
 mysql_engine=/mysql/mysql_8.0
-#mysql_engine=/maria/maria_10.6
 
 ###################################### 함수
 mysql_query() {
@@ -240,5 +238,11 @@ echo "!========== Error Log ==========!"
 echo ""
 
 tail -100 $error_log
+
+#echo ""
+#echo "!========== Slow Query Log ==========!"
+#echo ""
+#slow_query_log_file=$(mysql_query "SHOW VARIABLES LIKE 'slow_query_log_file';" | awk '{print $2}')
+#ls -lh "$slow_query_log_file"*
 
 ###################################### Made by 추추

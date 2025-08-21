@@ -44,7 +44,7 @@ create table if not exists {db_name}.hc_information (
     questions bigint,
     com_commit bigint,
     com_rollback bigint,
-    innodb_engine_status text,
+    innodb_engine_status mediumtext,
     replication_status text,
     error_log_content text,
     slow_queries int,
