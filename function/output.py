@@ -27,11 +27,11 @@ class Output(Common):
         # 데이터 변환
         sizes = [round(convert_value(row[2]), 2) for row in data]
         labels = [row[1].split()[0] for row in data]
-        months = [datetime.strptime(d, "%Y-%m-%d").month for d in labels]
-        labels = [f"{m}월" for m in months]
+        # months = [datetime.strptime(d, "%Y-%m-%d").month for d in labels]
+        # labels = [f"{m}월" for m in months]
 
         # 폰트
-        rc('font', family='Malgun Gothic')
+        # rc('font', family='Malgun Gothic')
 
         # 그래프 그리기
         plt.set_loglevel('WARNING')
