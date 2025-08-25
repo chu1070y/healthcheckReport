@@ -18,8 +18,10 @@ def make_replacer(data_dict):
 class MSword(Common):
     def __init__(self):
         self.logger = self.get_logger()
+        self.config = self.get_config()
+        self.sample_report_path = self.config['path']['sample_report']
+        # self.sample_report_path = './sample/sample_healthcheck_report_mariadb.docx'
 
-        self.sample_report_path = './sample/sample_healthcheck_report.docx'
         self.report_path = './result/[RockPLACE] 정기점검보고서_'
 
         self.graph_folder = './result/graphs/'
