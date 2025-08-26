@@ -63,8 +63,8 @@ create table if not exists {db_name}.hc_information (
     max_used_connect numeric(5,2) generated always as (max_used_connections/NULLIF(max_connection, 0) * 100),
     connection_miss_rate numeric(5,2) generated always as (aborted_connects/NULLIF(connections, 0) * 100),
     created_tmp_rate numeric(5,2) generated always as (created_tmp_disk_tables/NULLIF((created_tmp_disk_tables + created_tmp_tables), 0) * 100),
-    qps double generated always as (questions/NULLIF(uptime, 0)),
-    tps double generated always as ((com_commit + com_rollback)/NULLIF(uptime, 0)),
+    qps double generated always as (round((`questions` / nullif(`uptime`,0)),2)),
+    tps double generated always as (round(((`com_commit` + `com_rollback`) / nullif(`uptime`,0)),2)),
     
     PRIMARY KEY (service_name, execute_time)
 

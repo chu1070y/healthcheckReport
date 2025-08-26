@@ -35,7 +35,7 @@ fi
 os_memory=$(free -h | awk '/^Mem:/ { print $2 }')
 
 # Get IP Address (exclude loopback and docker bridge)
-ip_address=$(hostname -I | awk '{ for(i=1;i<=NF;i++) if ($i != "127.0.0.1" && $i !~ /^172\.17\./) { print $i; break } }')
+ip_address=$(hostname -I | awk '{ for(i=1;i<=NF;i++) if ($i != "127.0.0.1") { print $i; break } }')
 
 # Get CPU MHz average
 cpu_mhz=$(awk -F: '/cpu MHz/ {sum+=$2; count++} END {if(count>0) printf "%.2f", sum/count; else print "Unknown"}' /proc/cpuinfo)
