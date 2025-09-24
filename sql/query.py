@@ -75,7 +75,7 @@ get_info_column_name = "select column_name from information_schema.columns where
 
 insert_information = 'replace into {db_name}.hc_information ({column_list}) values ({column_value})'
 
-get_datasize = "select service_name, DATE_FORMAT(execute_time, '%Y-%m-%d %H:%i:%s') AS execute_time, data_size from {db_name}.hc_information where service_name='{service_name}' limit 6"
+get_datasize = "SELECT * FROM (SELECT service_name, DATE_FORMAT(execute_time,'%Y-%m-%d %H:%i:%s') AS execute_time,data_size FROM {db_name}.hc_information WHERE service_name='{service_name}' ORDER BY execute_time DESC LIMIT 6) AS recent ORDER BY execute_time ASC"
 
 get_information = """
   SELECT
