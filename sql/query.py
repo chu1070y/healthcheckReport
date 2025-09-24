@@ -78,15 +78,17 @@ insert_information = 'replace into {db_name}.hc_information ({column_list}) valu
 get_datasize = "SELECT * FROM (SELECT service_name, DATE_FORMAT(execute_time,'%Y-%m-%d %H:%i:%s') AS execute_time,data_size FROM {db_name}.hc_information WHERE service_name='{service_name}' ORDER BY execute_time DESC LIMIT 6) AS recent ORDER BY execute_time ASC"
 
 get_information = """
+SELECT *
+FROM (
   SELECT
-      *,
-      slow_queries - LAG(slow_queries) OVER (PARTITION BY service_name ORDER BY execute_time) AS diff_slow_queries,
-      select_full_join - LAG(select_full_join) OVER (PARTITION BY service_name ORDER BY execute_time) AS diff_select_full_join,
-      select_scan  - LAG(select_scan) OVER (PARTITION BY service_name ORDER BY execute_time) AS diff_select_scan,
-      sort_merge_passes - LAG(sort_merge_passes) OVER (PARTITION BY service_name ORDER BY execute_time) AS diff_sort_merge_passes
-  FROM
-      {db_name}.hc_information
-  WHERE
-      service_name = '{service_name}' and execute_time = '{execute_time}'
+    *,
+    slow_queries - LAG(slow_queries) OVER (PARTITION BY service_name ORDER BY execute_time)           AS diff_slow_queries,
+    select_full_join - LAG(select_full_join) OVER (PARTITION BY service_name ORDER BY execute_time)   AS diff_select_full_join,
+    select_scan - LAG(select_scan) OVER (PARTITION BY service_name ORDER BY execute_time)             AS diff_select_scan,
+    sort_merge_passes - LAG(sort_merge_passes) OVER (PARTITION BY service_name ORDER BY execute_time) AS diff_sort_merge_passes
+  FROM {db_name}.hc_information
+  WHERE service_name = '{service_name}'
+) t
+WHERE t.execute_time = '{execute_time}';
 """
 
