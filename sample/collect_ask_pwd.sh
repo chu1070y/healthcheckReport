@@ -218,22 +218,22 @@ echo "select_full_join=$select_full_join"
 echo "select_scan=$select_scan"
 echo "sort_merge_passes=$sort_merge_passes"
 
-human_uptime=$(mysql -u"$db_user" -p"$db_password" -S "$socket" -e "\s" 2>/dev/null | grep -i "Uptime" | awk -F'Uptime:' '{print $2}' | xargs)
+human_uptime=$($mysql_engine/bin/mysql -u"$db_user" -p"$db_password" -S "$socket" -e "\s" 2>/dev/null | grep -i "Uptime" | awk -F'Uptime:' '{print $2}' | xargs)
 uptime_human=$(echo "$human_uptime" | awk '{print $1, $2, $3, $4}')
 echo "uptime_text=$uptime_human"
 
-db_version=$(mysql -u"$db_user" -p"$db_password" -S "$socket" -e "\s" 2>/dev/null | grep -i "Server version" | awk -F'Server version:' '{print $2}' | xargs)
+db_version=$($mysql_engine/bin/mysql -u"$db_user" -p"$db_password" -S "$socket" -e "\s" 2>/dev/null | grep -i "Server version" | awk -F'Server version:' '{print $2}' | xargs)
 echo "db_version=$db_version"
 
 echo ""
 echo "!========== InnoDB Engine Status ==========!"
 echo ""
-mysql -u"$db_user" -p"$db_password" -S "$socket" -e "SHOW ENGINE INNODB STATUS\G" 2>/dev/null
+$mysql_engine/bin/mysql -u"$db_user" -p"$db_password" -S "$socket" -e "SHOW ENGINE INNODB STATUS\G" 2>/dev/null
 
 echo ""
 echo "!========== Replication Status ==========!"
 echo ""
-mysql -u"$db_user" -p"$db_password" -S "$socket" -e "SHOW SLAVE STATUS\G" 2>/dev/null
+$mysql_engine/bin/mysql -u"$db_user" -p"$db_password" -S "$socket" -e "SHOW SLAVE STATUS\G" 2>/dev/null
 
 echo ""
 echo "!========== Error Log ==========!"
