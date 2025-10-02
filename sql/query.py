@@ -2,7 +2,7 @@ create_database = 'create database if not exists {db_name}'
 
 create_information_table = '''
 create table if not exists {db_name}.hc_information (
-    service_name varchar(30),
+    service_name varchar(100),
     execute_time datetime,
     hostname varchar(30),
     os_version varchar(100),
@@ -56,10 +56,22 @@ create table if not exists {db_name}.hc_information (
     
     
     -- calculated columns
-    innodb_buffer_pool_hit_rate numeric(5,2) generated always as (100 - innodb_buffer_pool_reads/NULLIF(innodb_buffer_pool_read_requests, 0) * 100),
+    innodb_buffer_pool_hit_rate numeric(5,2) generated always as (
+        CASE 
+            WHEN (100 - (innodb_buffer_pool_reads/NULLIF(innodb_buffer_pool_read_requests, 0) * 100)) < 0
+            THEN 90.00
+            ELSE (100 - (innodb_buffer_pool_reads/NULLIF(innodb_buffer_pool_read_requests, 0) * 100))
+        END
+    ),
     key_buffer_hit_rate numeric(5,2) generated always as (100 - key_reads/NULLIF(key_read_requests, 0) * 100),
     query_cache_hit_rate numeric(5,2) generated always as (qcache_hits/NULLIF((qcache_hits+qcache_inserts), 0) * 100),
-    thread_cache_miss_rate numeric(5,2) generated always as (threads_created/NULLIF(connections, 0) * 100),
+    thread_cache_miss_rate decimal(5,2) generated always as (
+        CASE
+            WHEN ((threads_created / NULLIF(connections,0)) * 100) > 100
+            THEN NULL
+            ELSE (threads_created / NULLIF(connections,0)) * 100
+        END
+    ),
     max_used_connect numeric(5,2) generated always as (max_used_connections/NULLIF(max_connection, 0) * 100),
     connection_miss_rate numeric(5,2) generated always as (aborted_connects/NULLIF(connections, 0) * 100),
     created_tmp_rate numeric(5,2) generated always as (created_tmp_disk_tables/NULLIF((created_tmp_disk_tables + created_tmp_tables), 0) * 100),
